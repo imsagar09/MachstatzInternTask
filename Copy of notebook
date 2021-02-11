@@ -1,0 +1,93 @@
+# coding: utf-8
+
+# In[91]:
+
+
+import requests
+import json
+import datetime
+
+
+# In[92]:
+
+
+url="https://gitlab.com/-/snippets/2067888/raw/master/sample_json_1.json"
+result=requests.get(url).json()
+shift_a=[0,0]
+shift_b=[0,0]
+shift_c=[0,0]
+t1=datetime.datetime.strptime("2021-01-28T00:30:00Z",'%Y-%m-%dT%H:%M:%SZ')
+t1=t1.time()
+t2=datetime.datetime.strptime("2021-01-28T8:30:00Z",'%Y-%m-%dT%H:%M:%SZ')
+t2=t2.time()
+t3=datetime.datetime.strptime("2021-01-28T14:30:00Z",'%Y-%m-%dT%H:%M:%SZ')
+t3=t3.time()
+
+
+# In[93]:
+
+
+start=input()
+end=input()
+start=datetime.datetime.strptime(start,'%Y-%m-%dT%H:%M:%SZ')
+end=datetime.datetime.strptime(end,'%Y-%m-%dT%H:%M:%SZ')
+
+
+# In[94]:
+
+
+for data in result:
+    t=datetime.datetime.strptime(data['time'],'%Y-%m-%d %H:%M:%S')
+    if(t>=start and t<=end):
+        if(t.time()>=t1 and t.time()<=t2):
+            if(data["production_A"]==True):
+                shift_a[0]=shift_a[0]+1
+            if(data["production_B"]==True):
+                shift_a[1]=shift_a[1]+1
+        elif(t.time()>=t2 and t.time()<=t3):
+            if(data["production_A"]==True):
+                shift_b[0]=shift_b[0]+1
+            if(data["production_B"]==True):
+                shift_b[1]=shift_b[1]+1
+
+        elif(t.time()>=t3 and t.time()<=t1):
+            if(data["production_A"]==True):
+                shift_c[0]=shift_c[0]+1
+            if(data["production_B"]==True):
+                shift_c[1]=shift_c[1]+1
+    
+
+
+# In[95]:
+
+
+print(shift_a)
+print(shift_b)
+print(shift_c)
+
+
+# In[96]:
+
+
+temp={}
+temp["shiftA"]={"production_A_count":shift_a[0],"production_B_count":shift_a[1]}
+temp["shiftB"]={"production_A_count":shift_b[0],"production_B_count":shift_b[1]}
+temp["shiftC"]={"production_A_count":shift_c[0],"production_B_count":shift_c[1]}
+
+
+# In[97]:
+
+
+temp
+
+
+# In[98]:
+
+
+ans=json.dumps(temp)
+
+
+# In[99]:
+
+
+ans
